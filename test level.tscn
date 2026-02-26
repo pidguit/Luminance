@@ -2,6 +2,9 @@
 
 [ext_resource type="PackedScene" uid="uid://derdisym8tyb8" path="res://player.tscn" id="1_04kop"]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_04kop"]
+size = Vector2(40, 40)
+
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_04kop"]
 distance = -48.0
 
@@ -12,23 +15,51 @@ distance = -48.0
 [node name="Luminance" type="Node2D" unique_id=703652792]
 
 [node name="Player" parent="." unique_id=1973192305 instance=ExtResource("1_04kop")]
-position = Vector2(-1, -53)
+position = Vector2(-15, -6)
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1824136752]
 zoom = Vector2(4, 4)
 
-[node name="Walls" type="StaticBody2D" parent="." unique_id=1354595692]
+[node name="Testing Wall2" type="StaticBody2D" parent="." unique_id=1018859721]
+disable_mode = 1
 
-[node name="Floor" type="CollisionShape2D" parent="Walls" unique_id=879692163]
+[node name="ColorRect" type="ColorRect" parent="Testing Wall2" unique_id=986419242]
+offset_left = -86.0
+offset_top = 37.0
+offset_right = -46.0
+offset_bottom = 77.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Testing Wall2" unique_id=1139782474]
+position = Vector2(-66, 57)
+shape = SubResource("RectangleShape2D_04kop")
+
+[node name="Testing Wall" type="StaticBody2D" parent="." unique_id=139937883]
+disable_mode = 1
+
+[node name="ColorRect" type="ColorRect" parent="Testing Wall" unique_id=162149363]
+offset_left = -1.0
+offset_top = 37.0
+offset_right = 39.0
+offset_bottom = 77.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Testing Wall" unique_id=166678517]
+position = Vector2(19, 57)
+shape = SubResource("RectangleShape2D_04kop")
+
+[node name="Level Border" type="StaticBody2D" parent="." unique_id=1354595692]
+
+[node name="Floor" type="CollisionShape2D" parent="Level Border" unique_id=879692163]
 position = Vector2(1, 30)
 shape = SubResource("WorldBoundaryShape2D_04kop")
 
-[node name="Left Wall" type="CollisionShape2D" parent="Walls" unique_id=1132193691]
+[node name="Left Wall" type="CollisionShape2D" parent="Level Border" unique_id=1132193691]
 position = Vector2(-145.5, -4)
 rotation = 1.5707964
 shape = SubResource("WorldBoundaryShape2D_r5kg7")
+one_way_collision = true
 
-[node name="Right Wall" type="CollisionShape2D" parent="Walls" unique_id=139180099]
+[node name="Right Wall" type="CollisionShape2D" parent="Level Border" unique_id=139180099]
 position = Vector2(145.5, 6)
 rotation = -1.5707964
 shape = SubResource("WorldBoundaryShape2D_q8tb0")
+one_way_collision = true
