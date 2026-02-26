@@ -51,6 +51,7 @@ func _physics_process(delta: float) -> void:
 	var target_velocity_x = direction * SPEED
 	velocity.x = move_toward(velocity.x, target_velocity_x, ACCELERATION * delta)
 	
+	# Flips sprite depending on horizontal velocity
 	if velocity.x > 1:
 		$AnimatedSprite2D.flip_h = false
 	elif velocity.x < -1:
