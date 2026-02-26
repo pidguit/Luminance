@@ -55,5 +55,10 @@ func _physics_process(delta: float) -> void:
 
 	# Smooth movement
 	velocity.x = move_toward(velocity.x, target_velocity_x, ACCELERATION * delta)
-
+	
+	if velocity.x > 1:
+		$AnimatedSprite2D.flip_h = false
+	elif velocity.x < -1:
+		$AnimatedSprite2D.flip_h = true
+		
 	move_and_slide()
