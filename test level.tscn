@@ -30,7 +30,7 @@ offset_right = -76.0
 offset_bottom = 78.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Testing Wall2" unique_id=1139782474]
-position = Vector2(-96, 58)
+position = Vector2(-97, 58)
 shape = SubResource("RectangleShape2D_04kop")
 
 [node name="Testing Wall" type="StaticBody2D" parent="." unique_id=139937883]
@@ -49,17 +49,15 @@ shape = SubResource("RectangleShape2D_04kop")
 [node name="Level Border" type="StaticBody2D" parent="." unique_id=1354595692]
 
 [node name="Floor" type="CollisionShape2D" parent="Level Border" unique_id=879692163]
-position = Vector2(-1, 31)
+position = Vector2(-2, 31)
 shape = SubResource("WorldBoundaryShape2D_04kop")
 
 [node name="Left Wall" type="CollisionShape2D" parent="Level Border" unique_id=1132193691]
 position = Vector2(-146, 1)
 rotation = 1.5707964
 shape = SubResource("WorldBoundaryShape2D_r5kg7")
-one_way_collision = true
 
 [node name="Right Wall" type="CollisionShape2D" parent="Level Border" unique_id=139180099]
-position = Vector2(145, 0)
+position = Vector2(144, 0)
 rotation = -1.5707964
 shape = SubResource("WorldBoundaryShape2D_q8tb0")
-one_way_collision = true

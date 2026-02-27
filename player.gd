@@ -56,7 +56,7 @@ func _physics_process(delta: float) -> void:
 			velocity.x *= slide_jump_speed
 			end_slide()
 	
-	if slide_duration <= 0:
+	if slide_timer <= 0:
 		end_slide()
 		
 	# Handles jump
