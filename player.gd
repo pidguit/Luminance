@@ -6,7 +6,7 @@ const TERMINAL_VELOCITY = 200 # Max fall speed
 var maxfallspeed = 200
 
 const SPEED = 95.0 # Sets max horizontal speed
-const ACCELERATION = 1300.0 # How fast the character moves (x axis)
+const ACCELERATION = 900.0 # How fast the character moves (x axis)
 var MaxAirJumps = 1
 var airjumpsavailable = 1
 
@@ -115,4 +115,5 @@ func _physics_process(delta: float) -> void:
 			# Wall Jump Detection
 			
 	move_and_slide()
-	
+	# snaps character to pixels?	
+	#$AnimatedSprite2D.position = position.snapped(Vector2(1,1)) - position
