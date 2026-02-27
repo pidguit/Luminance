@@ -38,12 +38,12 @@ disable_mode = 1
 
 [node name="ColorRect" type="ColorRect" parent="Testing Wall" unique_id=162149363]
 offset_left = 46.0
-offset_top = 38.0
+offset_top = 26.0
 offset_right = 86.0
-offset_bottom = 78.0
+offset_bottom = 66.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Testing Wall" unique_id=166678517]
-position = Vector2(66, 58)
+position = Vector2(66, 46)
 shape = SubResource("RectangleShape2D_04kop")
 
 [node name="Level Border" type="StaticBody2D" parent="." unique_id=1354595692]

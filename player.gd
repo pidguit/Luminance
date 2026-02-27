@@ -1,24 +1,35 @@
 extends CharacterBody2D
 
-
+#  Variables Related to Jumping / Falling
 const JUMP_VELOCITY = -210.0 # How fast and high character jumps
 const TERMINAL_VELOCITY = 200 # Max fall speed
 var maxfallspeed = 200
-
-const SPEED = 95.0 # Sets max horizontal speed
-const ACCELERATION = 900.0 # How fast the character moves (x axis)
 var MaxAirJumps = 1
 var airjumpsavailable = 1
 
+# Walking Variables
+const SPEED = 95.0 # Sets max horizontal speed
+const ACCELERATION = 900.0 # How fast the character moves (x axis)
 var last_direction = 1
 
-const WallSlideSpeed = 100
-const WALLJUMP_FRAMES = 10
+# Wall Jumping Variables
+const WallSlideSpeed = SPEED
+const WallJumpDuration = .15
+const NeutralWallJumpDuration = .10
+const WallJumpSpeed = 150
+const NeutralWallJumpSpeed = 100
+
 var walljumptimer = 0
 var walldirection = 0
 var walljumpoverride = false
 var neutralwalljump = false
 
+# Sliding Variables
+var is_sliding = false
+var slide_timer = 0.25
+var slide_duration = .25
+var slide_speed = 250
+var slide_jump_speed = .85
 
 func _physics_process(delta: float) -> void:
 	# direction the player is facing (put at top just in case for later)
@@ -36,20 +47,32 @@ func _physics_process(delta: float) -> void:
 	if is_on_floor():
 		airjumpsavailable = MaxAirJumps
 		walljumpoverride = false
+	
+	if is_on_floor() and Input.is_action_just_pressed("slide") and is_sliding == false:
+		start_slide()
+		
+	if is_sliding == true:
+		slide_duration -= delta
+		if Input.is_action_just_pressed("jump"):
+			velocity.x *= slide_jump_speed
+			end_slide()
+	
+	if slide_duration <= 0:
+		end_slide()
 		
 	# Handles jump and double jump
-	if Input.is_action_just_pressed("ui_accept") and is_on_floor():
+	if Input.is_action_just_pressed("jump") and is_on_floor():
 		velocity.y = JUMP_VELOCITY
 		
-	elif Input.is_action_just_pressed("ui_accept") and airjumpsavailable > 0 and not is_on_wall():
+	elif Input.is_action_just_pressed("jump") and airjumpsavailable > 0 and not is_on_wall():
 		velocity.y = JUMP_VELOCITY
 		airjumpsavailable -= 1
 		walljumpoverride = false
 		walljumptimer = 0
 
 	# Detects what direction the character should be moving including null movement
-	var left_pressed = Input.is_action_pressed("ui_left")
-	var right_pressed = Input.is_action_pressed("ui_right")
+	var left_pressed = Input.is_action_pressed("move_left")
+	var right_pressed = Input.is_action_pressed("move_right")
 	
 	if left_pressed and not right_pressed:
 		direction = -1
@@ -64,40 +87,50 @@ func _physics_process(delta: float) -> void:
 		
 	# Walking target velocity
 	var target_velocity_x = direction * SPEED
-
-	# Handles Wall Jump
-	if not is_on_floor() and is_on_wall():
-		if Input.is_action_just_pressed("ui_accept"):
-			walljumptimer = 0
-			velocity.y = JUMP_VELOCITY
-			walljumpoverride = true
-			neutralwalljump = false
-			if walljumptimer < 2 and direction == 0:
-				neutralwalljump	= true
-
+	
 	# Get's wall direction
 	if is_on_wall():
 		walldirection = get_wall_normal().x
-
-	# Changes target velocity for wall jumps
-	if walljumpoverride == true and walljumptimer != WALLJUMP_FRAMES:
-		walljumptimer += 1
-		if neutralwalljump == true:
-			target_velocity_x = walldirection * SPEED
+		
+	# Initializes Wall Jump
+	if not is_on_floor() and is_on_wall() and Input.is_action_just_pressed("jump"):
+		walljumptimer = 0
+		walljumpoverride = true
+		velocity.y = JUMP_VELOCITY
+		if direction == 0:
+			neutralwalljump = true
 		else:
-			target_velocity_x = walldirection * SPEED + (40 * walldirection)
-
-	if walljumptimer == WALLJUMP_FRAMES:
-		if neutralwalljump == true:
-			if walljumptimer ==  15:
-				walljumptimer = 0
-		else:
-			walljumptimer = 0
-			walljumpoverride = false
 			neutralwalljump = false
 
+	# Changes target velocity for wall jumps
+	if walljumpoverride == true:
+		walljumptimer += delta
+		
+		if neutralwalljump == true:
+			velocity.x = (NeutralWallJumpSpeed * walldirection)
+		else:
+			velocity.x = (WallJumpSpeed * walldirection)
+
+		if walljumptimer >= WallJumpDuration and neutralwalljump == false:
+			walljumpoverride = false
+			walljumptimer = 0
+		
+		if walljumptimer >= NeutralWallJumpDuration and neutralwalljump == true:
+			walljumpoverride = false
+			neutralwalljump = false
+			walljumptimer = 0
+
 	# This actually moves the character (moves towards target velocity with acceleration)
-	velocity.x = move_toward(velocity.x, target_velocity_x, ACCELERATION * delta)
+	#velocity.x = move_toward(velocity.x, target_velocity_x, ACCELERATION * delta)
+
+	if is_on_floor():
+		velocity.x = move_toward(velocity.x, target_velocity_x, ACCELERATION * delta)
+	elif direction != 0 and sign(velocity.x) == sign(direction) and abs(velocity.x) > SPEED and walljumpoverride == false:
+		pass
+	elif direction == 0 and abs(velocity.x) > SPEED and walljumpoverride == false:
+		velocity.x = move_toward(velocity.x, target_velocity_x, (ACCELERATION/3) * delta)
+	else:
+		velocity.x = move_toward(velocity.x, target_velocity_x, (ACCELERATION) * delta)
 	
 	if is_on_wall():
 		var wall_dir = get_wall_normal().x
@@ -116,4 +149,17 @@ func _physics_process(delta: float) -> void:
 			
 	move_and_slide()
 	# snaps character to pixels?	
-	#$AnimatedSprite2D.position = position.snapped(Vector2(1,1)) - position
+	$AnimatedSprite2D.position = position.snapped(Vector2(1,1)) - position
+
+func start_slide():
+	rotation_degrees = -90 * last_direction
+	is_sliding = true
+	slide_duration = slide_timer
+	var direction = last_direction
+	velocity.x = slide_speed * direction
+	
+	
+func end_slide():
+	is_sliding = false
+	rotation_degrees = 0
+	airjumpsavailable += 1
