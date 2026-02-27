@@ -24,13 +24,13 @@ zoom = Vector2(4, 4)
 disable_mode = 1
 
 [node name="ColorRect" type="ColorRect" parent="Testing Wall2" unique_id=986419242]
-offset_left = -117.0
-offset_top = 35.0
-offset_right = -77.0
-offset_bottom = 75.0
+offset_left = -116.0
+offset_top = 38.0
+offset_right = -76.0
+offset_bottom = 78.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Testing Wall2" unique_id=1139782474]
-position = Vector2(-97, 55)
+position = Vector2(-96, 58)
 shape = SubResource("RectangleShape2D_04kop")
 
 [node name="Testing Wall" type="StaticBody2D" parent="." unique_id=139937883]
