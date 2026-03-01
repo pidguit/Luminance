@@ -146,11 +146,13 @@ func _physics_process(delta: float) -> void:
 
 	move_and_slide()
 	# snaps character to pixels (don't  really understand this still tbh)
-	$AnimatedSprite2D.position = position.snapped(Vector2(1,1)) - position
+	#$AnimatedSprite2D.position = position.snapped(Vector2(1,1)) - position
+
 
 # Activates a slide
 func start_slide():
-	rotation_degrees = -90 * last_direction
+	$AnimatedSprite2D.rotation_degrees = -90 * last_direction
+	$CollisionShape2D.rotation_degrees = -90 * last_direction
 	is_sliding = true
 	slide_timer = slide_duration
 	var direction = last_direction
@@ -159,5 +161,6 @@ func start_slide():
 # Ends a slide
 func end_slide():
 	is_sliding = false
-	rotation_degrees = 0
+	$AnimatedSprite2D.rotation_degrees = 0
+	$CollisionShape2D.rotation_degrees = 0
 	airjumpsavailable += 1 # Just because I'm temporarly rotating the model, when jump cancels a slide, it uses double jump so giving it back

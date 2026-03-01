@@ -1,0 +1,14 @@
+extends Camera2D
+var player : Node2D
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	player = get_node("../Player")
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	position.x = player.position.x
+	clamp(position.y, -58, -50)
+	pass

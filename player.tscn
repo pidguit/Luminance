@@ -29,5 +29,5 @@ sprite_frames = SubResource("SpriteFrames_i3pqv")
 animation = &"new_animation"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1941135019]
-position = Vector2(0, 1.75)
+position = Vector2(0, 2.75)
 shape = SubResource("RectangleShape2D_hqtel")
