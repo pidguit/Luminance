@@ -3,10 +3,6 @@
 [ext_resource type="PackedScene" uid="uid://derdisym8tyb8" path="res://player.tscn" id="1_04kop"]
 [ext_resource type="Script" uid="uid://bt8uth2m08jyn" path="res://testlevelcamera.gd" id="2_r5kg7"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_r5kg7"]
-line_spacing = 0.0
-font_size = 10
-
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_04kop"]
 size = Vector2(40, 40)
 
@@ -19,6 +15,10 @@ distance = -48.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_r5kg7"]
 size = Vector2(32, 64)
+
+[sub_resource type="LabelSettings" id="LabelSettings_r5kg7"]
+line_spacing = 0.0
+font_size = 10
 
 [sub_resource type="LabelSettings" id="LabelSettings_q8tb0"]
 line_spacing = 0.0
@@ -36,15 +36,6 @@ position_smoothing_enabled = true
 position_smoothing_speed = 4.0
 rotation_smoothing_speed = 0.0
 script = ExtResource("2_r5kg7")
-
-[node name="Label" type="Label" parent="." unique_id=403172604]
-offset_left = -88.0
-offset_top = -31.0
-offset_right = -6.0
-offset_bottom = 4.0
-text = "Try Jumping and 
-Double Jumping!"
-label_settings = SubResource("LabelSettings_r5kg7")
 
 [node name="Testing Wall3" type="StaticBody2D" parent="." unique_id=1366849130]
 position = Vector2(175, -36)
@@ -105,14 +96,14 @@ shape = SubResource("WorldBoundaryShape2D_q8tb0")
 
 [node name="ColorRect3" type="ColorRect" parent="Level Border" unique_id=46232171]
 offset_left = 403.0
-offset_top = -100.0
+offset_top = -237.0
 offset_right = 681.0
 offset_bottom = 118.0
 color = Color(0, 0, 0, 1)
 
 [node name="ColorRect2" type="ColorRect" parent="Level Border" unique_id=1921842082]
 offset_left = -438.0
-offset_top = -99.0
+offset_top = -230.0
 offset_right = -160.0
 offset_bottom = 119.0
 color = Color(0, 0, 0, 1)
@@ -152,6 +143,17 @@ offset_bottom = 78.0
 position = Vector2(-96, 58)
 shape = SubResource("RectangleShape2D_04kop")
 
+[node name="Label" type="Label" parent="." unique_id=403172604]
+offset_left = -88.0
+offset_top = -31.0
+offset_right = -6.0
+offset_bottom = 4.0
+text = "Try Jumping and
+Double Jumping!"
+label_settings = SubResource("LabelSettings_r5kg7")
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="Label2" type="Label" parent="." unique_id=539941318]
 offset_left = 41.0
 offset_top = -34.0
@@ -160,6 +162,8 @@ offset_bottom = -6.0
 text = "Try Wall Jumping
 (And Sliding)"
 label_settings = SubResource("LabelSettings_q8tb0")
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="Label3" type="Label" parent="." unique_id=471574073]
 offset_left = 195.0
@@ -169,3 +173,4 @@ offset_bottom = -43.0
 text = "Try Slide Jumping
 (Slide then Jump)"
 label_settings = SubResource("LabelSettings_q8tb0")
+horizontal_alignment = 1
