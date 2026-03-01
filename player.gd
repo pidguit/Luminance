@@ -33,7 +33,6 @@ var slide_jump_speed = .85
 func _physics_process(delta: float) -> void:
 	# direction the player is facing (put at top just in case for later cause there's a lot of things that use this)
 	var direction = 0
-	
 	# Add the gravity and set max fall speed
 	if not is_on_floor():
 		velocity += get_gravity() * delta
@@ -56,8 +55,8 @@ func _physics_process(delta: float) -> void:
 			velocity.x *= slide_jump_speed
 			end_slide()
 	
-	if slide_timer <= 0:
-		end_slide()
+		if slide_timer <= 0:
+			end_slide()
 		
 	# Handles jump
 	if Input.is_action_just_pressed("jump") and is_on_floor():
@@ -160,6 +159,7 @@ func start_slide():
 	
 # Ends a slide
 func end_slide():
+	print('ending slide')
 	is_sliding = false
 	$AnimatedSprite2D.rotation_degrees = 0
 	$CollisionShape2D.rotation_degrees = 0

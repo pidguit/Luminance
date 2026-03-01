@@ -98,21 +98,21 @@ shape = SubResource("WorldBoundaryShape2D_q8tb0")
 offset_left = 403.0
 offset_top = -237.0
 offset_right = 681.0
-offset_bottom = 118.0
+offset_bottom = 248.0
 color = Color(0, 0, 0, 1)
 
 [node name="ColorRect2" type="ColorRect" parent="Level Border" unique_id=1921842082]
 offset_left = -438.0
 offset_top = -230.0
 offset_right = -160.0
-offset_bottom = 119.0
+offset_bottom = 250.0
 color = Color(0, 0, 0, 1)
 
 [node name="ColorRect" type="ColorRect" parent="Level Border" unique_id=1139740055]
 offset_left = -169.0
 offset_top = 78.0
 offset_right = 408.0
-offset_bottom = 118.0
+offset_bottom = 240.0
 color = Color(0, 0, 0, 1)
 
 [node name="Testing Wall4" type="StaticBody2D" parent="." unique_id=1337616792]
