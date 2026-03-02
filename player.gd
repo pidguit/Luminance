@@ -159,7 +159,6 @@ func start_slide():
 	
 # Ends a slide
 func end_slide():
-	print('ending slide')
 	is_sliding = false
 	$AnimatedSprite2D.rotation_degrees = 0
 	$CollisionShape2D.rotation_degrees = 0
