@@ -20,17 +20,23 @@ const WallJumpSpeed = 150
 const NeutralWallJumpSpeed = 100
 var walljumptimer = 0
 var walldirection = 0
+var walljump = false
 var walljumpoverride = false
 var neutralwalljump = false
 
 # Sliding Variables
 var is_sliding = false
+var slide_jump = false
 const slide_duration = 0.25
 var slide_timer = 0.25 # This counts backwards, don't change it lol
 var slide_speed = 250
 var slide_jump_speed = .85
 
+var crouching = false
+var aircrouch = false
+
 func _physics_process(delta: float) -> void:
+	
 	# direction the player is facing (put at top just in case for later cause there's a lot of things that use this)
 	var direction = 0
 	# Add the gravity and set max fall speed
@@ -44,18 +50,46 @@ func _physics_process(delta: float) -> void:
 	# Resets double jump while on floor
 	if is_on_floor():
 		airjumpsavailable = MaxAirJumps
+		slide_jump = false
+		walljump = false
 		walljumpoverride = false
+		if velocity.x == 0:
+			$AnimatedSprite2D.play("Idle")
+		elif is_sliding == false:
+			$AnimatedSprite2D.play("Walking")
 	
+	# Starts a Slide
 	if is_on_floor() and Input.is_action_just_pressed("slide") and is_sliding == false:
 		start_slide()
+	
+	# Crouching Logic
+	if is_sliding or slide_jump:
+		crouching = false
+		aircrouch = false
+	elif is_on_floor() and Input.is_action_pressed("move_down"):
+		crouching = true
+	elif not is_on_floor() and Input.is_action_pressed("move_down"):
+		aircrouch = true
+		if airjumpsavailable < 1 or walljump:
+			crouching = false
+			aircrouch = false
+		if velocity.y != 0 and (not crouching or not aircrouch):
+			crouching  = false
+			aircrouch = false
+	elif can_stand_up() == false:
+			crouching = true
+			aircrouch = true
+	else:
+		crouching = false
+		aircrouch = false
 		
 	if is_sliding == true:
-		slide_timer -= delta
-		if Input.is_action_just_pressed("jump"):
+		slide_timer -= delta # Starts timer
+		if Input.is_action_just_pressed("jump"): # Cancels slide for a slide jump
 			velocity.x *= slide_jump_speed
+			slide_jump = true
 			end_slide()
-	
-		if slide_timer <= 0:
+		if slide_timer <= 0: # Ends slide when timer is up
 			end_slide()
 		
 	# Handles jump
@@ -87,6 +121,10 @@ func _physics_process(delta: float) -> void:
 	# Walking target velocity, this is the default
 	var target_velocity_x = direction * SPEED
 	
+	if crouching and is_on_floor():
+		target_velocity_x = 0
+		
+	
 	# Get's wall direction (for wall jump)
 	if is_on_wall():
 		walldirection = get_wall_normal().x
@@ -104,6 +142,7 @@ func _physics_process(delta: float) -> void:
 	# Adds the velocity for wall jumps
 	if walljumpoverride == true:
 		walljumptimer += delta
+		walljump = true
 		
 		if neutralwalljump == true:
 			velocity.x = (NeutralWallJumpSpeed * walldirection)
@@ -118,7 +157,7 @@ func _physics_process(delta: float) -> void:
 			walljumpoverride = false
 			neutralwalljump = false
 			walljumptimer = 0
-
+	
 	# This actually moves the character (moves towards target velocity with acceleration)
 	if is_on_floor():
 		velocity.x = move_toward(velocity.x, target_velocity_x, ACCELERATION * delta) # Walking  Around (default)
@@ -127,22 +166,34 @@ func _physics_process(delta: float) -> void:
 	elif direction == 0 and abs(velocity.x) > SPEED and walljumpoverride == false:
 		velocity.x = move_toward(velocity.x, target_velocity_x, (ACCELERATION/3) * delta) # decelerates if has too much speed and tries to go opposite direction
 	else:
-		velocity.x = move_toward(velocity.x, target_velocity_x, (ACCELERATION) * delta) # if you don't have too much speed, it goes back to default
+		velocity.x = move_toward(velocity.x, target_velocity_x, ACCELERATION * delta) # if you don't have too much speed, it goes back to default
 	
 	# Sliding down wall Physics
-	if is_on_wall():
+	if is_on_wall() and (not crouching or not aircrouch):
 		var wall_dir = get_wall_normal().x
-		if (wall_dir > 0 and direction < 0) or (wall_dir < 0 and direction > 0):
+		if ((wall_dir > 0 and velocity.x < 0) or (wall_dir < 0 and velocity.x > 0)) and not is_on_floor():
 			maxfallspeed = 50
 		else:
 			maxfallspeed = TERMINAL_VELOCITY
 	
 	# Flips sprite depending on horizontal velocity
-	if velocity.x > 1:
+	if (velocity.x > 1) or (crouching and direction > 0):
 		$AnimatedSprite2D.flip_h = false
-	elif velocity.x < -1:
+	elif (velocity.x < -1) or (crouching and direction < 0):
 		$AnimatedSprite2D.flip_h = true
-
+	
+	if is_sliding:
+		set_collision("slide")
+	elif crouching or aircrouch or can_stand_up() == false:
+		set_collision("crouch")
+		$AnimatedSprite2D.play("Crouching")
+	elif not is_on_floor() and velocity.x != 0 and crouching == false and not is_on_wall():
+		$AnimatedSprite2D.play("MovingFall")
+	elif not is_on_floor() and not aircrouch:
+		$AnimatedSprite2D.play("Fall")
+	else:
+		set_collision("default")
+	
 	move_and_slide()
 	# snaps character to pixels (don't  really understand this still tbh)
 	#$AnimatedSprite2D.position = position.snapped(Vector2(1,1)) - position
@@ -150,8 +201,7 @@ func _physics_process(delta: float) -> void:
 
 # Activates a slide
 func start_slide():
-	$AnimatedSprite2D.rotation_degrees = -90 * last_direction
-	$CollisionShape2D.rotation_degrees = -90 * last_direction
+	$AnimatedSprite2D.play("Slide")
 	is_sliding = true
 	slide_timer = slide_duration
 	var direction = last_direction
@@ -159,7 +209,18 @@ func start_slide():
 	
 # Ends a slide
 func end_slide():
+	$AnimatedSprite2D.play("Walking")
 	is_sliding = false
-	$AnimatedSprite2D.rotation_degrees = 0
-	$CollisionShape2D.rotation_degrees = 0
-	airjumpsavailable += 1 # Just because I'm temporarly rotating the model, when jump cancels a slide, it uses double jump so giving it back
+
+func set_collision(state):
+	$DefaultCollision.disabled = state != "default"
+	$SlideCollision.disabled = state != "slide"
+	$CrouchCollision.disabled = state != "crouch"
+	
+func can_stand_up():
+	if $LeftRayCast.is_colliding() or $RightRayCast.is_colliding():
+		return false
+	else:
+		return true
+	
+# Put mouth on breathing animation?

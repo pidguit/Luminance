@@ -27,7 +27,7 @@ font_size = 10
 [node name="Luminance" type="Node2D" unique_id=703652792]
 
 [node name="Player" parent="." unique_id=1973192305 instance=ExtResource("1_04kop")]
-position = Vector2(-135, 62)
+position = Vector2(123, 67)
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1824136752]
 position = Vector2(-129, 8)
@@ -123,14 +123,14 @@ position = Vector2(254, 0)
 disable_mode = 1
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Testing Wall4" unique_id=1884635870]
-position = Vector2(-100, 33)
+position = Vector2(-100, 36)
 shape = SubResource("RectangleShape2D_r5kg7")
 
 [node name="ColorRect" type="ColorRect" parent="Testing Wall4" unique_id=1168895869]
 offset_left = -116.0
-offset_top = 1.0
+offset_top = 4.0
 offset_right = -84.0
-offset_bottom = 65.0
+offset_bottom = 68.0
 
 [node name="Testing Wall5" type="StaticBody2D" parent="." unique_id=351000245]
 position = Vector2(399, -38)

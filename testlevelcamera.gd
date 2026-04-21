@@ -9,6 +9,5 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	position.x = player.position.x
-	clamp(position.y, -58, -50)
+	position.x = player.position.x	
 	pass
