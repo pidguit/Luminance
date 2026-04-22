@@ -35,10 +35,12 @@ var slide_jump_speed = .85
 var crouching = false
 var aircrouch = false
 
+var brightness = "light"
+
 func _physics_process(delta: float) -> void:
-	
 	# direction the player is facing (put at top just in case for later cause there's a lot of things that use this)
 	var direction = 0
+	
 	# Add the gravity and set max fall speed
 	if not is_on_floor():
 		velocity += get_gravity() * delta
@@ -47,16 +49,22 @@ func _physics_process(delta: float) -> void:
 		if velocity.y > maxfallspeed:
 			velocity.y = maxfallspeed
 	
-	# Resets double jump while on floor
+	# Resets double jump while on floor and animates walking and idle
 	if is_on_floor():
 		airjumpsavailable = MaxAirJumps
 		slide_jump = false
 		walljump = false
 		walljumpoverride = false
 		if velocity.x == 0:
-			$AnimatedSprite2D.play("Idle")
+			if brightness == "dark":
+				$AnimatedSprite2D.play("IdleLight")
+			else:
+				$AnimatedSprite2D.play("Idle")
 		elif is_sliding == false:
-			$AnimatedSprite2D.play("Walking")
+			if brightness == "dark":
+				$AnimatedSprite2D.play("WalkingLight")
+			else:
+				$AnimatedSprite2D.play("Walking")
 	
 	# Starts a Slide
 	if is_on_floor() and Input.is_action_just_pressed("slide") and is_sliding == false:
@@ -70,11 +78,8 @@ func _physics_process(delta: float) -> void:
 		crouching = true
 	elif not is_on_floor() and Input.is_action_pressed("move_down"):
 		aircrouch = true
-		if airjumpsavailable < 1 or walljump:
+		if airjumpsavailable < 1 or walljump or (velocity.y != 0 and (not crouching or not aircrouch)):
 			crouching = false
-			aircrouch = false
-		if velocity.y != 0 and (not crouching or not aircrouch):
-			crouching  = false
 			aircrouch = false
 	elif can_stand_up() == false:
 			crouching = true
@@ -82,7 +87,8 @@ func _physics_process(delta: float) -> void:
 	else:
 		crouching = false
 		aircrouch = false
-		
+	
+	# Counts down the sliding timer and ends slide
 	if is_sliding == true:
 		slide_timer -= delta # Starts timer
 		if Input.is_action_just_pressed("jump"): # Cancels slide for a slide jump
@@ -121,9 +127,9 @@ func _physics_process(delta: float) -> void:
 	# Walking target velocity, this is the default
 	var target_velocity_x = direction * SPEED
 	
+	# Can't move while crouching
 	if crouching and is_on_floor():
 		target_velocity_x = 0
-		
 	
 	# Get's wall direction (for wall jump)
 	if is_on_wall():
@@ -171,7 +177,7 @@ func _physics_process(delta: float) -> void:
 	# Sliding down wall Physics
 	if is_on_wall() and (not crouching or not aircrouch):
 		var wall_dir = get_wall_normal().x
-		if ((wall_dir > 0 and velocity.x < 0) or (wall_dir < 0 and velocity.x > 0)) and not is_on_floor():
+		if ((wall_dir > 0 and  velocity.x < 0) or (wall_dir < 0 and velocity.x > 0)) and not is_on_floor():
 			maxfallspeed = 50
 		else:
 			maxfallspeed = TERMINAL_VELOCITY
@@ -182,26 +188,19 @@ func _physics_process(delta: float) -> void:
 	elif (velocity.x < -1) or (crouching and direction < 0):
 		$AnimatedSprite2D.flip_h = true
 	
-	if is_sliding:
-		set_collision("slide")
-	elif crouching or aircrouch or can_stand_up() == false:
-		set_collision("crouch")
-		$AnimatedSprite2D.play("Crouching")
-	elif not is_on_floor() and velocity.x != 0 and crouching == false and not is_on_wall():
-		$AnimatedSprite2D.play("MovingFall")
-	elif not is_on_floor() and not aircrouch:
-		$AnimatedSprite2D.play("Fall")
-	else:
-		set_collision("default")
+	animate(brightness)
 	
 	move_and_slide()
+
 	# snaps character to pixels (don't  really understand this still tbh)
 	#$AnimatedSprite2D.position = position.snapped(Vector2(1,1)) - position
 
-
 # Activates a slide
 func start_slide():
-	$AnimatedSprite2D.play("Slide")
+	if brightness == "dark":
+		$AnimatedSprite2D.play("SlideLight")
+	else:
+		$AnimatedSprite2D.play("Slide")
 	is_sliding = true
 	slide_timer = slide_duration
 	var direction = last_direction
@@ -209,18 +208,49 @@ func start_slide():
 	
 # Ends a slide
 func end_slide():
-	$AnimatedSprite2D.play("Walking")
+	if brightness == "dark":
+		$AnimatedSprite2D.play("WalkingLight")
+	else:
+		$AnimatedSprite2D.play("Walking")
 	is_sliding = false
+	set_collision("default")
 
+# Sets collision based on what state is needed (can't do it in physics process)
 func set_collision(state):
 	$DefaultCollision.disabled = state != "default"
 	$SlideCollision.disabled = state != "slide"
 	$CrouchCollision.disabled = state != "crouch"
 	
+# Checks if the player can stand up (make sure player doesn't get stuck after a slide)
 func can_stand_up():
 	if $LeftRayCast.is_colliding() or $RightRayCast.is_colliding():
 		return false
 	else:
 		return true
+
+# Animation Logic for a couple states, allows for flipping it from light to dark
+func animate(state):
+	var list = []
+	var dark = ["CrouchingLight", "MovingFallLight", "FallLight", "WallSlideLight"]
+	var light = ["Crouching", "MovingFall", "Fall", "WallSlide"]
 	
+	if state == "dark":
+		list = dark
+	else:
+		list = light
+	
+	if is_sliding:
+		set_collision("slide")
+	elif crouching or aircrouch or can_stand_up() == false:
+		set_collision("crouch")
+		$AnimatedSprite2D.play(list[0])
+	elif not is_on_floor() and velocity.x != 0 and crouching == false and not is_on_wall():
+		$AnimatedSprite2D.play(list[1])
+	elif not is_on_floor() and not aircrouch and not is_on_wall():
+		$AnimatedSprite2D.play(list[2])
+	elif is_on_wall() and maxfallspeed == 50:
+		$AnimatedSprite2D.play(list[3])
+	else:
+		set_collision("default")
+
 # Put mouth on breathing animation?
