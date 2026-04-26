@@ -1,6 +1,6 @@
 extends CharacterBody2D
 
-#  Variables Related to Jumping / Falling
+# Variables Related to Jumping / Falling
 const JUMP_VELOCITY = -210.0 # How fast and high character jumps
 const TERMINAL_VELOCITY = 200 # Max fall speed
 var maxfallspeed = 200
@@ -166,7 +166,7 @@ func _physics_process(delta: float) -> void:
 	
 	# This actually moves the character (moves towards target velocity with acceleration)
 	if is_on_floor():
-		velocity.x = move_toward(velocity.x, target_velocity_x, ACCELERATION * delta) # Walking  Around (default)
+		velocity.x = move_toward(velocity.x, target_velocity_x, ACCELERATION * delta) # Walking Around (default)
 	elif direction != 0 and sign(velocity.x) == sign(direction) and abs(velocity.x) > SPEED and walljumpoverride == false:
 		pass # If flying air with higher than default speed, keeps it if moving in same direciton
 	elif direction == 0 and abs(velocity.x) > SPEED and walljumpoverride == false:
@@ -177,7 +177,7 @@ func _physics_process(delta: float) -> void:
 	# Sliding down wall Physics
 	if is_on_wall() and (not crouching or not aircrouch):
 		var wall_dir = get_wall_normal().x
-		if ((wall_dir > 0 and  velocity.x < 0) or (wall_dir < 0 and velocity.x > 0)) and not is_on_floor():
+		if ((wall_dir > 0 and velocity.x < 0) or (wall_dir < 0 and velocity.x > 0)) and not is_on_floor():
 			maxfallspeed = 50
 		else:
 			maxfallspeed = TERMINAL_VELOCITY
@@ -190,9 +190,10 @@ func _physics_process(delta: float) -> void:
 	
 	animate(brightness)
 	
+	
 	move_and_slide()
 
-	# snaps character to pixels (don't  really understand this still tbh)
+	# snaps character to pixels (don't really understand this still tbh)
 	#$AnimatedSprite2D.position = position.snapped(Vector2(1,1)) - position
 
 # Activates a slide
