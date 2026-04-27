@@ -97,8 +97,6 @@ func _physics_process(delta: float) -> void:
 		if Input.is_action_just_pressed("jump"): # Cancels slide for a slide jump
 			velocity.x *= slide_jump_speed
 			slide_jump = true
-			if not is_on_floor():
-				MaxAirJumps += 1
 			end_slide()
 		if slide_timer <= 0: # Ends slide when timer is up
 			end_slide()
@@ -236,6 +234,9 @@ func end_slide():
 		$AnimatedSprite2D.play("WalkingLight")
 	else:
 		$AnimatedSprite2D.play("Walking")
+	if not is_on_floor() and is_sliding == true:
+		airjumpsavailable += 1
+
 	is_sliding = false
 	set_collision("default")
 
