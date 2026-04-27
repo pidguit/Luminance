@@ -5,7 +5,7 @@ var player : Node2D
 var playerposition = 0
 var stuck = false
 
-var y_axis = -165
+var y_axis = -155
 var labeltext = [
 	"Welcome to Luminance!
 	you can walk with A + D or Arrow keys",
