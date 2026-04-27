@@ -39,11 +39,11 @@ script = ExtResource("1_v5uil")
 
 [node name="Label" type="Label" parent="." unique_id=2116939529]
 z_index = 1
-offset_left = 194.0
-offset_top = -317.0
-offset_right = 291.0
-offset_bottom = -292.0
-text = "That's  it for now
+offset_left = 197.0
+offset_top = -319.0
+offset_right = 294.0
+offset_bottom = -294.0
+text = "That is it for now
 Thanks for Playing!"
 label_settings = SubResource("LabelSettings_ilhis")
 horizontal_alignment = 1

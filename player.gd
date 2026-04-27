@@ -208,7 +208,7 @@ func _physics_process(delta: float) -> void:
 		crouchingheadlamp.scale.x = -1
 	
 
-	
+	#print(position.x)
 	animate(brightness)
 	
 	

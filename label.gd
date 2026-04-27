@@ -9,7 +9,7 @@ var y_axis = -155
 var labeltext = [
 	"Welcome to Luminance!
 	you can walk with A + D or Arrow keys",
-	"You can Jump with Space or C",
+	"You can Jump with Space, C, W or Up Arrow",
 	"To Double Jump, Jump while in mid-air!",
 	"You can Slide with Shift or X",
 	"To Wall Jump, Jump While sliding down a wall",

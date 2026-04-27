@@ -20,7 +20,7 @@ func _process(_delta: float) -> void:
 	if player.global_position.y < -215:
 		desired_y = default_y - 225
 		left_limit = -225
-		right_limit = 100
+		right_limit = 110
 	elif player.global_position.y < -108:
 		desired_y = default_y - 100
 		right_limit = 50
