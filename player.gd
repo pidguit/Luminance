@@ -240,11 +240,18 @@ func end_slide():
 # Sets collision based on what state is needed (can't do it in physics process)
 func set_collision(state):
 	$DefaultCollision.disabled = state != "default"
-	headlamp.enabled = (state == "default")
 	$SlideCollision.disabled = state != "slide"
-	slidingheadlamp.enabled = state == "slide"
 	$CrouchCollision.disabled = state != "crouch"
-	crouchingheadlamp.enabled = state == "crouch"
+	if brightness == "light":
+		headlamp.enabled = false
+		slidingheadlamp.enabled = false
+		crouchingheadlamp.enabled = false
+	
+	elif brightness == "dark":
+		headlamp.enabled = (state == "default")
+		slidingheadlamp.enabled = (state == "slide")
+		crouchingheadlamp.enabled = (state == "crouch")
+	
 	
 # Checks if the player can stand up (make sure player doesn't get stuck after a slide)
 func can_stand_up():
@@ -261,11 +268,9 @@ func animate(state):
 	
 	if state == "dark":
 		list = dark
-		headlamp.enabled = true
 
 	else:
 		list = light
-		headlamp.enabled = false
 	
 	if is_sliding:
 		set_collision("slide")

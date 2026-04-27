@@ -248,20 +248,17 @@ target_position = Vector2(0, -6)
 [node name="DefaultHeadLamp" type="PointLight2D" parent="." unique_id=131146573]
 z_index = 2
 position = Vector2(252, -3)
-energy = 1.44
 texture = ExtResource("4_hqtel")
 texture_scale = 0.2
 
 [node name="CrouchingHeadLamp" type="PointLight2D" parent="." unique_id=404729665]
 z_index = 2
 position = Vector2(252, 3)
-energy = 1.44
 texture = ExtResource("4_hqtel")
 texture_scale = 0.2
 
 [node name="SlidingHeadLamp" type="PointLight2D" parent="." unique_id=453067069]
 z_index = 2
 position = Vector2(249, 4)
-energy = 1.44
 texture = ExtResource("4_hqtel")
 texture_scale = 0.2

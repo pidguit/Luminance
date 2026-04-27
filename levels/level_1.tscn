@@ -1,6 +1,7 @@
 [gd_scene format=4 uid="uid://7vc3bmoxmujc"]
 
 [ext_resource type="PackedScene" uid="uid://derdisym8tyb8" path="res://player.tscn" id="1_btoec"]
+[ext_resource type="Script" uid="uid://cd1xq0gs58snu" path="res://levels/level_1.gd" id="1_gwceb"]
 [ext_resource type="Script" uid="uid://byb7fsyphovwm" path="res://camera_2d.gd" id="2_gwceb"]
 [ext_resource type="FontFile" uid="uid://x7gr4onrdsh5" path="res://assets/MinimalFont5x7.ttf" id="3_l53as"]
 [ext_resource type="Script" uid="uid://bxly0xff6ypkh" path="res://label.gd" id="4_3sk1a"]
@@ -34,6 +35,7 @@ tile_size = Vector2i(8, 8)
 sources/0 = SubResource("TileSetAtlasSource_3hotv")
 
 [node name="Tutorial Level" type="Node2D" unique_id=1422317871]
+script = ExtResource("1_gwceb")
 
 [node name="Player" parent="." unique_id=1973192305 instance=ExtResource("1_btoec")]
 position = Vector2(-125, -8)
