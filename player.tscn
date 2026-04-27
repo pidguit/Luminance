@@ -223,7 +223,7 @@ script = ExtResource("1_onrkg")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1150225611]
 material = SubResource("CanvasItemMaterial_hqtel")
 sprite_frames = SubResource("SpriteFrames_i3pqv")
-animation = &"SlideLight"
+animation = &"IdleLight"
 
 [node name="DefaultCollision" type="CollisionShape2D" parent="." unique_id=1941135019]
 position = Vector2(0, 2.5)

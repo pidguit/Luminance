@@ -36,6 +36,9 @@ var crouching = false
 var aircrouch = false
 
 var brightness = "light"
+var bobbing = 1
+var time :=  0.0
+
 @onready var headlamp: PointLight2D = $DefaultHeadLamp
 @onready var crouchingheadlamp: PointLight2D = $CrouchingHeadLamp
 @onready var slidingheadlamp: PointLight2D = $SlidingHeadLamp
@@ -207,10 +210,20 @@ func _physics_process(delta: float) -> void:
 		crouchingheadlamp.position.x = -abs(headlamp.position.x)
 		crouchingheadlamp.scale.x = -1
 	
-
-	#print(position.x)
 	animate(brightness)
-	
+
+	if $AnimatedSprite2D.animation == "Idle" or $AnimatedSprite2D.animation == "IdleLight":
+		time += delta
+		if time >= 1:
+			bobbing *= -1
+			time = 0.0
+			headlamp.position.y += bobbing
+			
+	else:
+		bobbing = 1
+		time = 0
+		headlamp.position.y = -3
+	#print(position.x)
 	
 	move_and_slide()
 
