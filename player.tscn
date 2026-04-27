@@ -3,6 +3,10 @@
 [ext_resource type="Script" uid="uid://cqos70q65a3u3" path="res://player.gd" id="1_onrkg"]
 [ext_resource type="Texture2D" uid="uid://ciits1yhtb2p0" path="res://assets/sprites/full.png" id="2_onrkg"]
 [ext_resource type="Texture2D" uid="uid://nldahtt6ah5l" path="res://assets/sprites/fullight.png" id="3_i3pqv"]
+[ext_resource type="Texture2D" uid="uid://b5dcvqvca3kwc" path="res://assets/sprites/headlamp.png" id="4_hqtel"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_hqtel"]
+light_mode = 1
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_i3pqv"]
 atlas = ExtResource("2_onrkg")
@@ -217,8 +221,9 @@ size = Vector2(4, 5)
 script = ExtResource("1_onrkg")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1150225611]
+material = SubResource("CanvasItemMaterial_hqtel")
 sprite_frames = SubResource("SpriteFrames_i3pqv")
-animation = &"Idle"
+animation = &"SlideLight"
 
 [node name="DefaultCollision" type="CollisionShape2D" parent="." unique_id=1941135019]
 position = Vector2(0, 2.5)
@@ -239,3 +244,24 @@ target_position = Vector2(0, -6)
 [node name="RightRayCast" type="RayCast2D" parent="." unique_id=952403962]
 position = Vector2(2, 3)
 target_position = Vector2(0, -6)
+
+[node name="DefaultHeadLamp" type="PointLight2D" parent="." unique_id=131146573]
+z_index = 2
+position = Vector2(252, -3)
+energy = 1.44
+texture = ExtResource("4_hqtel")
+texture_scale = 0.2
+
+[node name="CrouchingHeadLamp" type="PointLight2D" parent="." unique_id=404729665]
+z_index = 2
+position = Vector2(252, 3)
+energy = 1.44
+texture = ExtResource("4_hqtel")
+texture_scale = 0.2
+
+[node name="SlidingHeadLamp" type="PointLight2D" parent="." unique_id=453067069]
+z_index = 2
+position = Vector2(249, 4)
+energy = 1.44
+texture = ExtResource("4_hqtel")
+texture_scale = 0.2

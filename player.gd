@@ -36,6 +36,9 @@ var crouching = false
 var aircrouch = false
 
 var brightness = "light"
+@onready var headlamp: PointLight2D = $DefaultHeadLamp
+@onready var crouchingheadlamp: PointLight2D = $CrouchingHeadLamp
+@onready var slidingheadlamp: PointLight2D = $SlidingHeadLamp
 
 func _physics_process(delta: float) -> void:
 	# direction the player is facing (put at top just in case for later cause there's a lot of things that use this)
@@ -179,14 +182,32 @@ func _physics_process(delta: float) -> void:
 		var wall_dir = get_wall_normal().x
 		if ((wall_dir > 0 and velocity.x < 0) or (wall_dir < 0 and velocity.x > 0)) and not is_on_floor():
 			maxfallspeed = 50
+			headlamp.position.x = -abs(headlamp.position.x)
+			headlamp.scale.x = -1
+			
 		else:
 			maxfallspeed = TERMINAL_VELOCITY
 	
 	# Flips sprite depending on horizontal velocity
 	if (velocity.x > 1) or (crouching and direction > 0):
 		$AnimatedSprite2D.flip_h = false
+		headlamp.position.x = abs(headlamp.position.x)
+		headlamp.scale.x = 1
+		slidingheadlamp.position.x = abs(headlamp.position.x)
+		slidingheadlamp.scale.x = 1
+		crouchingheadlamp.position.x = abs(headlamp.position.x)
+		crouchingheadlamp.scale.x = 1
+		
 	elif (velocity.x < -1) or (crouching and direction < 0):
 		$AnimatedSprite2D.flip_h = true
+		headlamp.position.x = -abs(headlamp.position.x)
+		headlamp.scale.x = -1
+		slidingheadlamp.position.x = -abs(headlamp.position.x)
+		slidingheadlamp.scale.x = -1
+		crouchingheadlamp.position.x = -abs(headlamp.position.x)
+		crouchingheadlamp.scale.x = -1
+	
+
 	
 	animate(brightness)
 	
@@ -219,8 +240,11 @@ func end_slide():
 # Sets collision based on what state is needed (can't do it in physics process)
 func set_collision(state):
 	$DefaultCollision.disabled = state != "default"
+	headlamp.enabled = (state == "default")
 	$SlideCollision.disabled = state != "slide"
+	slidingheadlamp.enabled = state == "slide"
 	$CrouchCollision.disabled = state != "crouch"
+	crouchingheadlamp.enabled = state == "crouch"
 	
 # Checks if the player can stand up (make sure player doesn't get stuck after a slide)
 func can_stand_up():
@@ -237,8 +261,11 @@ func animate(state):
 	
 	if state == "dark":
 		list = dark
+		headlamp.enabled = true
+
 	else:
 		list = light
+		headlamp.enabled = false
 	
 	if is_sliding:
 		set_collision("slide")
@@ -251,7 +278,12 @@ func animate(state):
 		$AnimatedSprite2D.play(list[2])
 	elif is_on_wall() and maxfallspeed == 50:
 		$AnimatedSprite2D.play(list[3])
+		headlamp.position.x = -headlamp.position.x
+		headlamp.scale.x = -headlamp.scale.x
+
 	else:
 		set_collision("default")
+		headlamp.position.x = (last_direction) * abs(headlamp.position.x)
+		headlamp.scale.x = (last_direction) * abs(headlamp.scale.x)
 
 # Put mouth on breathing animation?
